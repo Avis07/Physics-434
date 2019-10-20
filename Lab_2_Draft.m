@@ -42,7 +42,8 @@ plot(x2,pdf2,'LineWidth',2);
 plot(x4,pdf4,'LineWidth',2);
 plot(x6,pdf6,'LineWidth',2); 
 plot(x8,pdf8,'LineWidth',2);
-plot(x10,pdf10,'LineWidth',2); 
+plot(x10,pdf10,'LineWidth',2);
+% one way to make the graph look better is to use xlim code to set limit for x
 hold off
 
     % B : Show that after 5 days, the resulting distribution is still a
