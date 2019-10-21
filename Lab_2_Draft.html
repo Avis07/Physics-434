@@ -1,0 +1,670 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PHYSICS 434 | APPLICATION OF COMPUTERS TO PHYSICAL MEASUREMENTS</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-19"><meta name="DC.source" content="Lab_2_Draft.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>PHYSICS 434 | APPLICATION OF COMPUTERS TO PHYSICAL MEASUREMENTS</h1><!--introduction--><p>LAB 2 ROUGH DRAFT 10.18.19 AVI SOVAL</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">PROBLEM 1</a></li><li><a href="#2">PROBLEM 2</a></li><li><a href="#3">PROBLEM 3</a></li><li><a href="#4">PROBLEM 4</a></li><li><a href="#5">THE END</a></li></ul></div><h2 id="1">PROBLEM 1</h2><pre class="codeinput"> <span class="comment">% We continue our exploration into the convolution of different data</span>
+ <span class="comment">% distributions by analyzing hypothetical signal-free background data in a</span>
+ <span class="comment">% Poisson distribution</span>
+
+ <span class="comment">% With an average background of 7 for the cosmic background ray data, and</span>
+ <span class="comment">% an average gamma-ray emission of 11</span>
+
+    <span class="comment">% A : How does the background pdf change as we sum over more days?</span>
+
+background = 7;
+gammaray = 11;
+
+distribution = makedist(<span class="string">'Poisson'</span>,<span class="string">'lambda'</span>,background);
+
+x = 0:1:25;
+
+pdf1 = pdf(distribution,x);
+pdf2 = conv(pdf1,pdf1);
+pdf4 = conv(pdf2,pdf2);
+pdf6 = conv(pdf2,pdf4);
+pdf8 = conv(pdf4,pdf4);
+pdf10 = conv(pdf8,pdf2);
+
+x1 = 0:1:length(pdf1)-1;
+x2 = 0:1:length(pdf2)-1;
+x4 = 0:1:length(pdf4)-1;
+x6 = 0:1:length(pdf6)-1;
+x8 = 0:1:length(pdf8)-1;
+x10 = 0:1:length(pdf10)-1;
+
+figure(1)
+plot(x,pdf1,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">on</span>
+plot(x2,pdf2,<span class="string">'LineWidth'</span>,2);
+plot(x4,pdf4,<span class="string">'LineWidth'</span>,2);
+plot(x6,pdf6,<span class="string">'LineWidth'</span>,2);
+plot(x8,pdf8,<span class="string">'LineWidth'</span>,2);
+plot(x10,pdf10,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">off</span>
+
+    <span class="comment">% B : Show that after 5 days, the resulting distribution is still a</span>
+    <span class="comment">% Poisson distribution. Why does this make sense?</span>
+
+    <span class="comment">% To do so, we just create a new Poisson distribution with an average</span>
+    <span class="comment">% background cosmic ray radiation equal to any of our convoluted</span>
+    <span class="comment">% distributions - say the pdf10, which convolutes over 10 days. If the</span>
+    <span class="comment">% two graphs match, then our resultant convoluted distribution is also</span>
+    <span class="comment">% a Poisson distribution</span>
+
+x = 0:1:length(pdf10)-1;
+lambda = dot(pdf10,x);
+
+figure(2)
+pdf10Poisson = makedist(<span class="string">'Poisson'</span>,<span class="string">'lambda'</span>,lambda);
+plot(0:length(pdf10)-1,pdf10,<span class="string">'*'</span>);
+hold <span class="string">on</span>
+plot(0:length(pdf10)-1,pdf(pdf10Poisson,0:length(pdf10)-1),<span class="string">':'</span>);
+
+    <span class="comment">% As we can see, the two distributions align perfectly. Since the</span>
+    <span class="comment">% Poisson distribution gives data on the number of events happening</span>
+    <span class="comment">% within a single day (or any arbitrary period), it makes sense that</span>
+    <span class="comment">% convolving (which we know to be adding) multiple such Poisson</span>
+    <span class="comment">% distributions should just yield a final pdf of measuring the initial</span>
+    <span class="comment">% number of events * the total number of days = total events. It scales</span>
+    <span class="comment">% completely proportionally, causing the resultant graphs to be</span>
+    <span class="comment">% identical.</span>
+
+    <span class="comment">% C : Show how the probability distribution evolves as we *average* the</span>
+    <span class="comment">% days, and discuss the change in the shape of the distribution with</span>
+    <span class="comment">% respect to part 1b</span>
+
+    <span class="comment">% Averaging the days means just dividing the background events measured</span>
+    <span class="comment">% for each of the convolved distributions by the number of days in each</span>
+    <span class="comment">% respective distribution, as follows:</span>
+
+figure(3)
+plot(x1/1,pdf1,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">on</span>
+plot(x2/2,pdf2,<span class="string">'LineWidth'</span>,2);
+plot(x4/4,pdf4,<span class="string">'LineWidth'</span>,2);
+plot(x6/6,pdf6,<span class="string">'LineWidth'</span>,2);
+plot(x8/8,pdf8,<span class="string">'LineWidth'</span>,2);
+plot(x10/10,pdf10,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">off</span>
+
+    <span class="comment">% As we can see, graphing the *average* of the days essentially makes</span>
+    <span class="comment">% all the Poisson distributions the same, just scaled slightly</span>
+    <span class="comment">% differently. The most likely number of counts for each day still</span>
+    <span class="comment">% remains 7, which is in line with the initial lambda parameter for the</span>
+    <span class="comment">% cosmic ray background Poisson distribution</span>
+
+    <span class="comment">% D : Given a testing period of 17 days, assuming we saw 17*11  = 187</span>
+    <span class="comment">% gamma ray events from our source, calculate the sigma of our</span>
+    <span class="comment">% observation</span>
+
+testPeriod = 17;
+events = testPeriod*gammaray;
+
+    <span class="comment">% From the results of 1b, we know that the lambda parameter for this</span>
+    <span class="comment">% 17-day data collection distribution should just be 17*lambda for a</span>
+    <span class="comment">% single day's data = 17*7 = 119</span>
+
+pdf17dist = makedist(<span class="string">'Poisson'</span>,<span class="string">'lambda'</span>,119);
+probs = cdf(pdf17dist,events,<span class="string">'upper'</span>);
+sigma = norminv(probs);
+disp(sigma)
+</pre><pre class="codeoutput">   -5.8017
+
+</pre><img vspace="5" hspace="5" src="Lab_2_Draft_01.png" alt=""> <img vspace="5" hspace="5" src="Lab_2_Draft_02.png" alt=""> <img vspace="5" hspace="5" src="Lab_2_Draft_03.png" alt=""> <h2 id="2">PROBLEM 2</h2><pre class="codeinput"> <span class="comment">% With a skewed background distribution such as the Rayleigh distribution:</span>
+
+    <span class="comment">% A : Show how the distribution changes as we average over more</span>
+    <span class="comment">% observing intervals</span>
+
+    <span class="comment">% We first create our Rayleigh distribution with a 'b' parameter of 5</span>
+
+x = 0:100;
+ray1 = makedist(<span class="string">'Rayleigh'</span>,<span class="string">'b'</span>,5);
+ray1 = pdf(ray1,x);
+ray2 = conv(ray1,ray1);
+ray4 = conv(ray2,ray2);
+
+    <span class="comment">% Now we convolve it to get distributions of the following observation</span>
+    <span class="comment">% intervals: 5, 10, 25, 50, 100, 200</span>
+
+ray5 = conv(ray4,ray1);
+ray10 = conv(ray5,ray5);
+ray20 = conv(ray10,ray10);
+ray25 = conv(ray20,ray5);
+ray50 = conv(ray25,ray25);
+ray100 = conv(ray50,ray50);
+ray200 = conv(ray100,ray100);
+
+    <span class="comment">% Plotting</span>
+
+figure(4)
+plot(x,ray1);
+x5 = 0:length(ray5)-1;
+x10 = 0:length(ray10)-1;
+x25 = 0:length(ray25)-1;
+x50 = 0:length(ray50)-1;
+x100 = 0:length(ray100)-1;
+x200 = 0:length(ray200)-1;
+hold <span class="string">on</span>
+plot(x5/5,ray5,<span class="string">'LineWidth'</span>,2);
+plot(x10/10,ray10,<span class="string">'LineWidth'</span>,2);
+plot(x25/25,ray25,<span class="string">'LineWidth'</span>,2);
+plot(x50/50,ray50,<span class="string">'LineWidth'</span>,2);
+plot(x100/100,ray100,<span class="string">'LineWidth'</span>,2);
+plot(x200/200,ray200,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">off</span>
+
+    <span class="comment">% B : Discuss how this shape changes. Does it approach a Gaussian</span>
+    <span class="comment">% distribution? If yes, after how many intervals?</span>
+
+    <span class="comment">% We can examine the Gaussian nature of each of these convolved</span>
+    <span class="comment">% Rayleigh distributions by graphing them on a log scale and analyzing</span>
+    <span class="comment">% their parabolic nature:</span>
+
+figure(5)
+plot(x,ray1);
+hold <span class="string">on</span>
+plot(x5/5,ray5,<span class="string">'LineWidth'</span>,2);
+plot(x10/10,ray10,<span class="string">'LineWidth'</span>,2);
+plot(x25/25,ray25,<span class="string">'LineWidth'</span>,2);
+plot(x50/50,ray50,<span class="string">'LineWidth'</span>,2);
+plot(x100/100,ray100,<span class="string">'LineWidth'</span>,2);
+plot(x200/200,ray200,<span class="string">'LineWidth'</span>,2);
+set(gca,<span class="string">'YScale'</span>,<span class="string">'log'</span>);
+hold <span class="string">off</span>
+
+    <span class="comment">% We can see from here that increasing the number of convolved Rayleigh</span>
+    <span class="comment">% distributions does indeed approach a more Gaussian set.</span>
+
+    <span class="comment">% To more accurately gauge the Gaussian nature of these convolved</span>
+    <span class="comment">% distributions, we can create a Gaussian function with a mu and sigma</span>
+    <span class="comment">% that match that of any of our Rayleigh distributions. We take the</span>
+    <span class="comment">% Rayleigh distribution that has been convolved 100 times and find its</span>
+    <span class="comment">% mu and sigma accordingly.</span>
+
+mu = dot(x100/100,ray100);
+variance = 0;
+
+<span class="keyword">for</span> i = 1:length(x100)
+
+    variance = variance + (i/100-mu)^2 * ray100(i);
+
+<span class="keyword">end</span>
+
+sigma = sqrt(variance);
+
+gaussRayTest = makedist(<span class="string">'Normal'</span>,<span class="string">'mu'</span>,mu,<span class="string">'sigma'</span>,sigma);
+gaussRayTest = pdf(gaussRayTest,x100/100);
+
+    <span class="comment">% We know overlay the Rayl00 (100 convolved Rayleigh distributions)</span>
+    <span class="comment">% plot with this test Gaussian plot to see how close they are, after</span>
+    <span class="comment">% which we will do the same except on a logarithmic scale</span>
+
+figure(6)
+plot(x100/100,ray100,<span class="string">'LineWidth'</span>,2);
+hold <span class="string">on</span>
+plot(x100/100,gaussRayTest,<span class="string">'LineWidth'</span>,2);
+
+    <span class="comment">% I KNOW THE ABOVE CODE IS NOT WORKING CORRECTLY RIGHT NOW I WILL COME BACK AND</span>
+    <span class="comment">% FIX IT ONCE I FIGURE OUT WHY ITS WRONG ^^^^^^^^^^^^^</span>
+</pre><img vspace="5" hspace="5" src="Lab_2_Draft_04.png" alt=""> <img vspace="5" hspace="5" src="Lab_2_Draft_05.png" alt=""> <img vspace="5" hspace="5" src="Lab_2_Draft_06.png" alt=""> <img vspace="5" hspace="5" src="Lab_2_Draft_07.png" alt=""> <h2 id="3">PROBLEM 3</h2><pre class="codeinput">    <span class="comment">% A : Assume we have a signal-free background distribution as a</span>
+    <span class="comment">% Gaussian with a mean of 0 with constant width. From looking at all</span>
+    <span class="comment">% the other pixels in the image, we can measure the width*3 and end up</span>
+    <span class="comment">% measuring a signal of strength 11.7. What is the significane and sigma</span>
+    <span class="comment">% of this detection? Can we claim a discovery?</span>
+
+    <span class="comment">% We begin by creating a Gaussian of mu 0 and sigma of 3</span>
+
+x = -100:1:100;
+swift = makedist(<span class="string">'Norma'</span>,<span class="string">'mu'</span>,0,<span class="string">'sigma'</span>,3);
+swift1 = pdf(swift,x);
+signal = 11.7;
+figure(7)
+plot(x,swift1,<span class="string">'LineWidth'</span>,2);
+
+    <span class="comment">% Now calculating the significance and sigma of the discovery</span>
+
+prob = cdf(swift,signal,<span class="string">'upper'</span>);
+sigma = norminv(prob);
+disp(sigma)
+
+    <span class="comment">% Our sigma is only -3.9 - therefore this is not significant enough to</span>
+    <span class="comment">% make a discovery.</span>
+
+    <span class="comment">% B and C : Say we search 10,000 pixels, what is the probability distribution</span>
+    <span class="comment">% of this background? Clearly state the question</span>
+
+    <span class="comment">% With 10,000 pixels to collect data from, and considering this is a</span>
+    <span class="comment">% Gaussian distribution, we know this new Gaussian will simply be the</span>
+    <span class="comment">% initial one convolved 10,000 times - or summed together 10,000 times</span>
+    <span class="comment">% while kept normalized. Therefore, we simply multiply the previously</span>
+    <span class="comment">% found probability by 10,000 and recalculate the significance of this</span>
+    <span class="comment">% statistic.</span>
+
+prob10k = prob*10000;
+sigma10k = norminv(prob10k);
+disp(sigma10k)
+
+    <span class="comment">% In this case, our sigma is only -0.0477, which is not that high at</span>
+    <span class="comment">% all.</span>
+</pre><pre class="codeoutput">   -3.9000
+
+   -0.0477
+
+</pre><img vspace="5" hspace="5" src="Lab_2_Draft_08.png" alt=""> <h2 id="4">PROBLEM 4</h2><pre class="codeinput">    <span class="comment">% A : Assuming we have the same Gaussian as in problem 3, calculate the</span>
+    <span class="comment">% signal required for a 5-sigma detection given the same conditions as</span>
+    <span class="comment">% problem 3a - i.e a single pixel trials factor</span>
+
+sig_VI = normcdf(5,<span class="string">'upper'</span>);
+prob_VI = icdf(swift,1-sig_VI);
+disp(prob_VI)
+
+    <span class="comment">% B : Do the same as 4a for problem 3b - i.e a 10,000 pixels trials</span>
+    <span class="comment">% factor</span>
+
+sig_VII = sig_VI/10000;
+prob_VII = icdf(swift,1-sig_VII);
+disp(prob_VII)
+
+    <span class="comment">% C : How much brighter must the signal be for a trials factor of</span>
+    <span class="comment">% 10,000 for it to be considered significant? What is the ratio of</span>
+    <span class="comment">% the signals?</span>
+
+ratio = prob_VII/prob_VI;
+disp(ratio)
+
+    <span class="comment">% As we modify our Gaussian dependent on the trials factor, the</span>
+    <span class="comment">% majority of the probability remains concentrated around the mean, and</span>
+    <span class="comment">% signals further away from it still remain in areas of extremely low</span>
+    <span class="comment">% probability. As a result, the integral we must perform from the</span>
+    <span class="comment">% signal out to infinity does not grow too much.</span>
+
+    <span class="comment">% D : What happens if we change our trials factor by three orders of</span>
+    <span class="comment">% magnitude? What must be the new signal for it to be considered</span>
+    <span class="comment">% significant?</span>
+
+sig_VX = sig_VI/10000000;
+prob_VX = icdf(swift,1-sig_VX);
+disp(prob_VX)
+
+    <span class="comment">% Even now, with a trials factor of 100,000,000, the signal required to</span>
+    <span class="comment">% be considered significant is only ~3 points higher than the 10,000</span>
+    <span class="comment">% trials factor significant signal. This means that as we increase the</span>
+    <span class="comment">% trials factor to higher and higher numbers, we are actually</span>
+    <span class="comment">% experiencing a sort of 'diminishing returns'.</span>
+</pre><pre class="codeoutput">   15.0000
+
+   19.6516
+
+    1.3101
+
+   22.5424
+
+</pre><h2 id="5">THE END</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% PHYSICS 434 | APPLICATION OF COMPUTERS TO PHYSICAL MEASUREMENTS 
+ % LAB 2 ROUGH DRAFT 
+ % 10.18.19
+ % AVI SOVAL 
+
+%% PROBLEM 1 
+
+ % We continue our exploration into the convolution of different data
+ % distributions by analyzing hypothetical signal-free background data in a
+ % Poisson distribution 
+
+ % With an average background of 7 for the cosmic background ray data, and
+ % an average gamma-ray emission of 11
+ 
+    % A : How does the background pdf change as we sum over more days? 
+    
+background = 7; 
+gammaray = 11; 
+
+distribution = makedist('Poisson','lambda',background); 
+
+x = 0:1:25; 
+
+pdf1 = pdf(distribution,x); 
+pdf2 = conv(pdf1,pdf1); 
+pdf4 = conv(pdf2,pdf2); 
+pdf6 = conv(pdf2,pdf4); 
+pdf8 = conv(pdf4,pdf4); 
+pdf10 = conv(pdf8,pdf2); 
+
+x1 = 0:1:length(pdf1)-1; 
+x2 = 0:1:length(pdf2)-1; 
+x4 = 0:1:length(pdf4)-1; 
+x6 = 0:1:length(pdf6)-1; 
+x8 = 0:1:length(pdf8)-1; 
+x10 = 0:1:length(pdf10)-1; 
+
+figure(1)
+plot(x,pdf1,'LineWidth',2); 
+hold on 
+plot(x2,pdf2,'LineWidth',2); 
+plot(x4,pdf4,'LineWidth',2);
+plot(x6,pdf6,'LineWidth',2); 
+plot(x8,pdf8,'LineWidth',2);
+plot(x10,pdf10,'LineWidth',2); 
+hold off
+
+    % B : Show that after 5 days, the resulting distribution is still a
+    % Poisson distribution. Why does this make sense? 
+    
+    % To do so, we just create a new Poisson distribution with an average
+    % background cosmic ray radiation equal to any of our convoluted
+    % distributions - say the pdf10, which convolutes over 10 days. If the
+    % two graphs match, then our resultant convoluted distribution is also
+    % a Poisson distribution 
+    
+x = 0:1:length(pdf10)-1; 
+lambda = dot(pdf10,x); 
+
+figure(2)
+pdf10Poisson = makedist('Poisson','lambda',lambda); 
+plot(0:length(pdf10)-1,pdf10,'*'); 
+hold on
+plot(0:length(pdf10)-1,pdf(pdf10Poisson,0:length(pdf10)-1),':'); 
+
+    % As we can see, the two distributions align perfectly. Since the
+    % Poisson distribution gives data on the number of events happening
+    % within a single day (or any arbitrary period), it makes sense that
+    % convolving (which we know to be adding) multiple such Poisson
+    % distributions should just yield a final pdf of measuring the initial
+    % number of events * the total number of days = total events. It scales
+    % completely proportionally, causing the resultant graphs to be
+    % identical. 
+    
+    % C : Show how the probability distribution evolves as we *average* the
+    % days, and discuss the change in the shape of the distribution with
+    % respect to part 1b 
+    
+    % Averaging the days means just dividing the background events measured
+    % for each of the convolved distributions by the number of days in each
+    % respective distribution, as follows: 
+    
+figure(3)
+plot(x1/1,pdf1,'LineWidth',2);
+hold on 
+plot(x2/2,pdf2,'LineWidth',2);
+plot(x4/4,pdf4,'LineWidth',2);
+plot(x6/6,pdf6,'LineWidth',2);
+plot(x8/8,pdf8,'LineWidth',2);
+plot(x10/10,pdf10,'LineWidth',2);
+hold off
+
+    % As we can see, graphing the *average* of the days essentially makes
+    % all the Poisson distributions the same, just scaled slightly
+    % differently. The most likely number of counts for each day still
+    % remains 7, which is in line with the initial lambda parameter for the
+    % cosmic ray background Poisson distribution 
+    
+    % D : Given a testing period of 17 days, assuming we saw 17*11  = 187
+    % gamma ray events from our source, calculate the sigma of our
+    % observation
+    
+testPeriod = 17; 
+events = testPeriod*gammaray; 
+
+    % From the results of 1b, we know that the lambda parameter for this
+    % 17-day data collection distribution should just be 17*lambda for a
+    % single day's data = 17*7 = 119
+    
+pdf17dist = makedist('Poisson','lambda',119); 
+probs = cdf(pdf17dist,events,'upper'); 
+sigma = norminv(probs); 
+disp(sigma)
+
+%% PROBLEM 2 
+
+ % With a skewed background distribution such as the Rayleigh distribution:
+ 
+    % A : Show how the distribution changes as we average over more
+    % observing intervals 
+ 
+    % We first create our Rayleigh distribution with a 'b' parameter of 5
+
+x = 0:100; 
+ray1 = makedist('Rayleigh','b',5); 
+ray1 = pdf(ray1,x);
+ray2 = conv(ray1,ray1); 
+ray4 = conv(ray2,ray2); 
+
+    % Now we convolve it to get distributions of the following observation
+    % intervals: 5, 10, 25, 50, 100, 200
+    
+ray5 = conv(ray4,ray1); 
+ray10 = conv(ray5,ray5); 
+ray20 = conv(ray10,ray10); 
+ray25 = conv(ray20,ray5); 
+ray50 = conv(ray25,ray25); 
+ray100 = conv(ray50,ray50); 
+ray200 = conv(ray100,ray100); 
+
+    % Plotting
+
+figure(4)
+plot(x,ray1); 
+x5 = 0:length(ray5)-1; 
+x10 = 0:length(ray10)-1; 
+x25 = 0:length(ray25)-1; 
+x50 = 0:length(ray50)-1; 
+x100 = 0:length(ray100)-1; 
+x200 = 0:length(ray200)-1; 
+hold on 
+plot(x5/5,ray5,'LineWidth',2);
+plot(x10/10,ray10,'LineWidth',2);
+plot(x25/25,ray25,'LineWidth',2);
+plot(x50/50,ray50,'LineWidth',2);
+plot(x100/100,ray100,'LineWidth',2);
+plot(x200/200,ray200,'LineWidth',2);
+hold off
+
+    % B : Discuss how this shape changes. Does it approach a Gaussian
+    % distribution? If yes, after how many intervals? 
+    
+    % We can examine the Gaussian nature of each of these convolved
+    % Rayleigh distributions by graphing them on a log scale and analyzing
+    % their parabolic nature: 
+    
+figure(5)
+plot(x,ray1);
+hold on 
+plot(x5/5,ray5,'LineWidth',2);
+plot(x10/10,ray10,'LineWidth',2);
+plot(x25/25,ray25,'LineWidth',2);
+plot(x50/50,ray50,'LineWidth',2);
+plot(x100/100,ray100,'LineWidth',2);
+plot(x200/200,ray200,'LineWidth',2);
+set(gca,'YScale','log'); 
+hold off 
+
+    % We can see from here that increasing the number of convolved Rayleigh
+    % distributions does indeed approach a more Gaussian set. 
+    
+    % To more accurately gauge the Gaussian nature of these convolved
+    % distributions, we can create a Gaussian function with a mu and sigma
+    % that match that of any of our Rayleigh distributions. We take the
+    % Rayleigh distribution that has been convolved 100 times and find its
+    % mu and sigma accordingly. 
+    
+mu = dot(x100/100,ray100); 
+variance = 0; 
+
+for i = 1:length(x100)
+    
+    variance = variance + (i/100-mu)^2 * ray100(i); 
+    
+end
+
+sigma = sqrt(variance);
+
+gaussRayTest = makedist('Normal','mu',mu,'sigma',sigma); 
+gaussRayTest = pdf(gaussRayTest,x100/100); 
+
+    % We know overlay the Rayl00 (100 convolved Rayleigh distributions)
+    % plot with this test Gaussian plot to see how close they are, after
+    % which we will do the same except on a logarithmic scale 
+    
+figure(6)
+plot(x100/100,ray100,'LineWidth',2); 
+hold on 
+plot(x100/100,gaussRayTest,'LineWidth',2); 
+
+    % I KNOW THE ABOVE CODE IS NOT WORKING CORRECTLY RIGHT NOW I WILL COME BACK AND
+    % FIX IT ONCE I FIGURE OUT WHY ITS WRONG ^^^^^^^^^^^^^
+    
+%% PROBLEM 3 
+
+    % A : Assume we have a signal-free background distribution as a
+    % Gaussian with a mean of 0 with constant width. From looking at all
+    % the other pixels in the image, we can measure the width*3 and end up
+    % measuring a signal of strength 11.7. What is the significane and sigma
+    % of this detection? Can we claim a discovery? 
+    
+    % We begin by creating a Gaussian of mu 0 and sigma of 3
+   
+x = -100:1:100; 
+swift = makedist('Norma','mu',0,'sigma',3); 
+swift1 = pdf(swift,x); 
+signal = 11.7; 
+figure(7)
+plot(x,swift1,'LineWidth',2); 
+
+    % Now calculating the significance and sigma of the discovery 
+    
+prob = cdf(swift,signal,'upper'); 
+sigma = norminv(prob); 
+disp(sigma)
+
+    % Our sigma is only -3.9 - therefore this is not significant enough to
+    % make a discovery. 
+    
+    % B and C : Say we search 10,000 pixels, what is the probability distribution
+    % of this background? Clearly state the question 
+    
+    % With 10,000 pixels to collect data from, and considering this is a
+    % Gaussian distribution, we know this new Gaussian will simply be the
+    % initial one convolved 10,000 times - or summed together 10,000 times
+    % while kept normalized. Therefore, we simply multiply the previously
+    % found probability by 10,000 and recalculate the significance of this
+    % statistic. 
+    
+prob10k = prob*10000; 
+sigma10k = norminv(prob10k); 
+disp(sigma10k)
+
+    % In this case, our sigma is only -0.0477, which is not that high at
+    % all. 
+    
+%% PROBLEM 4 
+
+    % A : Assuming we have the same Gaussian as in problem 3, calculate the
+    % signal required for a 5-sigma detection given the same conditions as
+    % problem 3a - i.e a single pixel trials factor 
+    
+sig_VI = normcdf(5,'upper'); 
+prob_VI = icdf(swift,1-sig_VI); 
+disp(prob_VI)
+
+    % B : Do the same as 4a for problem 3b - i.e a 10,000 pixels trials
+    % factor 
+    
+sig_VII = sig_VI/10000; 
+prob_VII = icdf(swift,1-sig_VII); 
+disp(prob_VII)
+
+    % C : How much brighter must the signal be for a trials factor of
+    % 10,000 for it to be considered significant? What is the ratio of
+    % the signals? 
+    
+ratio = prob_VII/prob_VI; 
+disp(ratio)
+
+    % As we modify our Gaussian dependent on the trials factor, the
+    % majority of the probability remains concentrated around the mean, and
+    % signals further away from it still remain in areas of extremely low
+    % probability. As a result, the integral we must perform from the
+    % signal out to infinity does not grow too much. 
+    
+    % D : What happens if we change our trials factor by three orders of
+    % magnitude? What must be the new signal for it to be considered
+    % significant? 
+    
+sig_VX = sig_VI/10000000; 
+prob_VX = icdf(swift,1-sig_VX); 
+disp(prob_VX)
+
+    % Even now, with a trials factor of 100,000,000, the signal required to
+    % be considered significant is only ~3 points higher than the 10,000
+    % trials factor significant signal. This means that as we increase the
+    % trials factor to higher and higher numbers, we are actually
+    % experiencing a sort of 'diminishing returns'. 
+    
+%% THE END 
+##### SOURCE END #####
+--></body></html>
